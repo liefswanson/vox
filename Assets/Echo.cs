@@ -31,16 +31,7 @@ public class Echo : MonoBehaviour {
         lightComp.cullingMask = 1 << LayerMask.NameToLayer(layer);
     }
 
-    void Update ()
-    {
-        //if (CrossPlatformInputManager.GetButtonDown("Echo"))
-        //{
-        //    echoing = !echoing;
-        //}
-        
-	}
-
-    void LateUpdate()
+    void Update()
     {
         if (echoing)
         {
@@ -50,5 +41,15 @@ public class Echo : MonoBehaviour {
         {
             lightComp.intensity = 0;
         }
+    }
+
+    public void Begin()
+    {
+        echoing = true;
+    }
+
+    public void Finish()
+    {
+        echoing = false;
     }
 }

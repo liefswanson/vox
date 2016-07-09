@@ -14,19 +14,25 @@ public class EchoController : MonoBehaviour {
     public Text breathDisplay;
 
     private bool draining;
-
     private float breath;
+    private Echo[] echoes;
 
 	void Start () {
         breath = maximumBreath;
         breathDisplay.text = Mathf.Floor(breath).ToString();
+        echoes = GetComponentsInChildren<Echo>();
 	}
 	
 	void Update () {
         if (CrossPlatformInputManager.GetButtonDown("Echo")
             && breath >= echoMinimum)
+        {
             draining = true;
-
+            for(var i = 0; i < echoes.Length; i++)
+            {
+                echoes[i].Begin();
+            }
+        }
         if (CrossPlatformInputManager.GetButton("Echo")
             && draining)
             breath -= drainRate * Time.deltaTime;
@@ -43,6 +49,10 @@ public class EchoController : MonoBehaviour {
             draining = false;
             if (breath < 0)
                 breath = 0;
+            for (var i = 0; i < echoes.Length; i++)
+            {
+                echoes[i].Finish();
+            }
         }
         breathDisplay.text = Mathf.Floor(breath).ToString();
     }
