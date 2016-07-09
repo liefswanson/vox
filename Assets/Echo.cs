@@ -33,10 +33,10 @@ public class Echo : MonoBehaviour {
 
     void Update ()
     {
-        if (CrossPlatformInputManager.GetButtonDown("Echo"))
-        {
-            echoing = !echoing;
-        }
+        //if (CrossPlatformInputManager.GetButtonDown("Echo"))
+        //{
+        //    echoing = !echoing;
+        //}
         
 	}
 
