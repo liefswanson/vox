@@ -11,7 +11,8 @@ public class EchoController : MonoBehaviour {
     public float echoMinimum = 50;
     public float rechargeRate = 20;
     public float drainRate = 20;
-    public Text breathDisplay;
+    // public Text breathDisplay;
+    public Slider breathMeter;
 
     private bool draining;
     private float breath;
@@ -19,8 +20,11 @@ public class EchoController : MonoBehaviour {
 
 	void Start () {
         breath = maximumBreath;
-        breathDisplay.text = Mathf.Floor(breath).ToString();
+        //breathDisplay.text = Mathf.Floor(breath).ToString();
         echoes = GetComponentsInChildren<Echo>();
+
+        breathMeter.maxValue = maximumBreath;
+        breathMeter.value = maximumBreath;
 	}
 	
 	void Update () {
@@ -54,6 +58,7 @@ public class EchoController : MonoBehaviour {
                 echoes[i].Finish();
             }
         }
-        breathDisplay.text = Mathf.Floor(breath).ToString();
+        //breathDisplay.text = Mathf.Floor(breath).ToString();
+        breathMeter.value = Mathf.Floor(breath);
     }
 }

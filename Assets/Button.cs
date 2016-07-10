@@ -10,7 +10,6 @@ public class Button : MonoBehaviour {
         if(other.gameObject.tag == "Player")
         {
             target.Activate();
-            Debug.Log("derp");
         }
     }
 }

@@ -7,6 +7,7 @@ public class KeyPickup : MonoBehaviour {
     private bool hasKey = false;
     public Image keyImg;
     public GameObject key;
+    public Achieve achieve;
 
     void Start()
     {
@@ -20,6 +21,7 @@ public class KeyPickup : MonoBehaviour {
             hasKey = true;
             keyImg.enabled = true;
             key.SetActive(false);
+            achieve.ObtainKey();
         }
     }
 }
