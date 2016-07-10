@@ -6,7 +6,6 @@ public class KeyPickup : MonoBehaviour {
 
     private bool hasKey = false;
     public Image keyImg;
-    public GameObject key;
     public Achieve achieve;
 
     void Start()
@@ -16,12 +15,24 @@ public class KeyPickup : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Key")
+        if (other.gameObject.tag == "Key"
+            && hasKey == false)
         {
-            hasKey = true;
-            keyImg.enabled = true;
-            key.SetActive(false);
+            SetHasKey(true);
+            other.gameObject.SetActive(false);
             achieve.ObtainKey();
         }
+        if (other.gameObject.tag == "Door"
+           && hasKey == true)
+        {
+            SetHasKey(false);
+            other.gameObject.SetActive(false);
+        }
+    }
+
+    void SetHasKey(bool x)
+    {
+        hasKey = x;
+        keyImg.enabled = x;
     }
 }

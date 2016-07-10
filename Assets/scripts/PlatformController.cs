@@ -6,11 +6,12 @@ public class PlatformController : MonoBehaviour {
 
     public Transform target;
     public AudioClip clipToMatch;
+    public AudioClip followUpClip;
     private float speed;
     private bool activated = false;
 
 	void Start () {
-        var time = clipToMatch.length;
+        var time = clipToMatch.length - followUpClip.length;
         var distance = Vector3.Distance(transform.position, target.position);
         speed = distance / time;
 	}
