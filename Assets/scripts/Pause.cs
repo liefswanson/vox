@@ -52,7 +52,6 @@ public class Pause : MonoBehaviour {
             {
                 PauseOff();
             }
-            Debug.Log("Paused");
         }
 	}
 }
