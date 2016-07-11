@@ -5,6 +5,7 @@ using System.Collections;
 public class Achieve : MonoBehaviour {
     private AudioSource source;
     public AudioClip obtainKeyClip;
+    public AudioClip openDoorClip;
 
     public void Start()
     {
@@ -16,8 +17,9 @@ public class Achieve : MonoBehaviour {
         source.PlayOneShot(obtainKeyClip);
     }
 
-    public void PressButton()
+    public float OpenDoor()
     {
-
+        source.PlayOneShot(openDoorClip);
+        return openDoorClip.length;
     }
 }

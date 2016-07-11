@@ -25,8 +25,7 @@ public class KeyPickup : MonoBehaviour {
         if (other.gameObject.tag == "Door"
            && hasKey == true)
         {
-            SetHasKey(false);
-            other.gameObject.SetActive(false);
+            StartCoroutine(openDoor(other.gameObject));
         }
     }
 
@@ -34,5 +33,13 @@ public class KeyPickup : MonoBehaviour {
     {
         hasKey = x;
         keyImg.enabled = x;
+    }
+
+    IEnumerator openDoor(GameObject door)
+    {
+        SetHasKey(false);
+        var delay = achieve.OpenDoor();
+        yield return new WaitForSeconds(delay);
+        door.SetActive(false);
     }
 }

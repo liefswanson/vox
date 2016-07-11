@@ -14,6 +14,8 @@ public class EchoController : MonoBehaviour {
     // public Text breathDisplay;
     public Slider breathMeter;
 
+    public MeshRenderer[] hiddenObjects;
+
     private bool draining;
     private float breath;
     private Echo[] echoes;
@@ -25,7 +27,11 @@ public class EchoController : MonoBehaviour {
 
         breathMeter.maxValue = maximumBreath;
         breathMeter.value = maximumBreath;
-	}
+        for (var i = 0; i < hiddenObjects.Length; i++)
+        {
+            hiddenObjects[i].enabled = false;
+        }
+    }
 	
 	void Update () {
         if (CrossPlatformInputManager.GetButtonDown("Echo")
@@ -36,10 +42,16 @@ public class EchoController : MonoBehaviour {
             {
                 echoes[i].Begin();
             }
+            for(var i = 0; i < hiddenObjects.Length; i++)
+            {
+                hiddenObjects[i].enabled = true;
+            }
         }
         if (CrossPlatformInputManager.GetButton("Echo")
             && draining)
+        {
             breath -= drainRate * Time.deltaTime;
+        }
         else
         {
             if (breath < maximumBreath)
@@ -56,6 +68,10 @@ public class EchoController : MonoBehaviour {
             for (var i = 0; i < echoes.Length; i++)
             {
                 echoes[i].Finish();
+            }
+            for (var i = 0; i < hiddenObjects.Length; i++)
+            {
+                hiddenObjects[i].enabled = false;
             }
         }
         //breathDisplay.text = Mathf.Floor(breath).ToString();
