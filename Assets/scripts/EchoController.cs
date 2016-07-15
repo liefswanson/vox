@@ -49,117 +49,123 @@ public class EchoController : MonoBehaviour
         }
     }
 
-    //FIXME I'm ugly
     void Update()
     {
         previousLoudness = currentLoudness;
         currentLoudness = micInput.clipLoudness;
 
-        // yell
-        if (!keyActive)
+        if (CanEcho())
         {
-            if (currentLoudness >= yellMin
-                && previousLoudness < yellMin
-                && breath >= echoMinimum)
+            if (YellEnter() && !keyActive)
             {
-                draining = true;
-                for (var i = 0; i < echoes.Length; i++)
-                {
-                    echoes[i].Begin();
-                }
-                for (var i = 0; i < hiddenObjects.Length; i++)
-                {
-                    hiddenObjects[i].enabled = true;
-                }
+                EchoEnter();
                 yellActive = true;
-                candleRangeRef = candle.range;
             }
-            if (currentLoudness >= yellMin
-                && previousLoudness > yellMin
-                && draining)
+            else if (CrossPlatformInputManager.GetButtonDown("Echo") && !yellActive)
             {
-                breath -= drainRate * Time.deltaTime;
+                EchoEnter();
+                keyActive = true;
+            }
+        }
+
+        if ((Yelling() || CrossPlatformInputManager.GetButton("Echo"))
+            && draining)
+        {
+            EchoDrain();
+            if (yellActive)
+            {
                 candle.range = candleRangeRef * candleRangeMult * Mathf.Min(currentLoudness * micScaling, 1);
             }
-            else
+            else if (keyActive)
             {
-                if (breath < maximumBreath)
-                    breath += rechargeRate * Time.deltaTime;
-                if (breath > maximumBreath)
-                    breath = maximumBreath;
-            }
-            if (currentLoudness < yellMin
-                && previousLoudness >= yellMin
-                || breath <= 0)
-            {
-                draining = false;
-                if (breath < 0)
-                    breath = 0;
-                for (var i = 0; i < echoes.Length; i++)
-                {
-                    echoes[i].Finish();
-                }
-                for (var i = 0; i < hiddenObjects.Length; i++)
-                {
-                    hiddenObjects[i].enabled = false;
-                }
-                yellActive = false;
-                candle.range = candleRangeRef;
-            }
-        }
-
-        // key press
-        if (!yellActive)
-        {
-            if (CrossPlatformInputManager.GetButtonDown("Echo")
-                 && breath >= echoMinimum)
-            {
-                draining = true;
-                for (var i = 0; i < echoes.Length; i++)
-                {
-                    echoes[i].Begin();
-                }
-                for (var i = 0; i < hiddenObjects.Length; i++)
-                {
-                    hiddenObjects[i].enabled = true;
-                }
-                keyActive = true;
-                candleRangeRef = candle.range;
-            }
-            if (CrossPlatformInputManager.GetButton("Echo")
-                && draining)
-            {
-                breath -= drainRate * Time.deltaTime;
                 candle.range = candleRangeRef * candleRangeMult;
             }
-            else
-            {
-                if (breath < maximumBreath)
-                    breath += rechargeRate * Time.deltaTime;
-                if (breath > maximumBreath)
-                    breath = maximumBreath;
-            }
-            if (CrossPlatformInputManager.GetButtonUp("Echo")
-                || breath <= 0)
-            {
-                draining = false;
-                if (breath < 0)
-                    breath = 0;
-                for (var i = 0; i < echoes.Length; i++)
-                {
-                    echoes[i].Finish();
-                }
-                for (var i = 0; i < hiddenObjects.Length; i++)
-                {
-                    hiddenObjects[i].enabled = false;
-                }
-                keyActive = false;
-                candle.range = candleRangeRef;
-            }
+        }
+        else
+        {
+            Rest();
         }
 
+        if (YellExit() || CrossPlatformInputManager.GetButtonUp("Echo") || OutOfBreath())
+        {
+            EchoExit();
+            yellActive = false;
+            keyActive = false;
+        }
 
-        //breathDisplay.text = Mathf.Floor(breath).ToString();
         breathMeter.value = Mathf.Floor(breath);
+    }
+
+    private bool YellEnter()
+    {
+        return currentLoudness >= yellMin
+                && previousLoudness < yellMin;
+    }
+
+    private bool Yelling()
+    {
+        return currentLoudness >= yellMin
+                && previousLoudness > yellMin;
+    }
+
+    private bool YellExit()
+    {
+        return currentLoudness < yellMin
+                && previousLoudness >= yellMin;
+    }
+
+
+    private void EchoEnter()
+    {
+        draining = true;
+        for (var i = 0; i < echoes.Length; i++)
+        {
+            echoes[i].Begin();
+        }
+        for (var i = 0; i < hiddenObjects.Length; i++)
+        {
+            hiddenObjects[i].enabled = true;
+        }
+        candleRangeRef = candle.range;
+    }
+
+    private void EchoDrain()
+    {
+        breath -= drainRate * Time.deltaTime;
+    }
+
+    private void Rest()
+    {
+        if (breath < maximumBreath)
+            breath += rechargeRate * Time.deltaTime;
+        if (breath > maximumBreath)
+            breath = maximumBreath;
+    }
+
+    private void EchoExit()
+    {
+        draining = false;
+        if (breath < 0)
+            breath = 0;
+        for (var i = 0; i < echoes.Length; i++)
+        {
+            echoes[i].Finish();
+        }
+        for (var i = 0; i < hiddenObjects.Length; i++)
+        {
+            hiddenObjects[i].enabled = false;
+        }
+        candle.range = candleRangeRef;
+    }
+
+
+    private bool CanEcho()
+    {
+        return breath >= echoMinimum;
+    }
+
+    private bool OutOfBreath()
+    {
+        return breath <= 0;
     }
 }
