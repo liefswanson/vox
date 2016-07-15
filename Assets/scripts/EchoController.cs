@@ -6,9 +6,9 @@ using UnityStandardAssets.CrossPlatformInput;
 public class EchoController : MonoBehaviour
 {
 
-    [Range(0, 100)]
+    [Range(0, 1000)]
     public float maximumBreath = 100;
-    [Range(0, 100)]
+    [Range(0, 1000)]
     public float echoMinimum = 50;
     public float rechargeRate = 20;
     public float drainRate = 20;
@@ -31,10 +31,14 @@ public class EchoController : MonoBehaviour
     public Light candle;
     public float candleRangeMult;
     private float candleRangeRef;
+    private float candleRangeTemp;
     public float micScaling = 5;
 
     private bool yellActive;
     private bool keyActive;
+
+    private bool fading;
+    public float fadeSpeed = 1f;
 
     void Start()
     {
@@ -47,6 +51,7 @@ public class EchoController : MonoBehaviour
         {
             hiddenObjects[i].enabled = false;
         }
+        candleRangeRef = candle.range;
     }
 
     void Update()
@@ -74,11 +79,13 @@ public class EchoController : MonoBehaviour
             EchoDrain();
             if (yellActive)
             {
-                candle.range = candleRangeRef * candleRangeMult * Mathf.Min(currentLoudness * micScaling, 1);
+                // fix, might need calibration
+                // candle.range = candleRangeTemp * candleRangeMult * Mathf.Min(currentLoudness * micScaling, 1);
+                candle.range = candleRangeTemp * candleRangeMult;
             }
             else if (keyActive)
             {
-                candle.range = candleRangeRef * candleRangeMult;
+                candle.range = candleRangeTemp * candleRangeMult;
             }
         }
         else
@@ -93,7 +100,12 @@ public class EchoController : MonoBehaviour
             keyActive = false;
         }
 
-        breathMeter.value = Mathf.Floor(breath);
+        if (fading)
+        {
+            candle.range = Mathf.Lerp(candle.range, candleRangeRef, fadeSpeed * Time.deltaTime);
+        }
+
+        breathMeter.value = breath;
     }
 
     private bool YellEnter()
@@ -126,7 +138,8 @@ public class EchoController : MonoBehaviour
         {
             hiddenObjects[i].enabled = true;
         }
-        candleRangeRef = candle.range;
+        candleRangeTemp = candleRangeRef;
+        fading = false;
     }
 
     private void EchoDrain()
@@ -155,7 +168,8 @@ public class EchoController : MonoBehaviour
         {
             hiddenObjects[i].enabled = false;
         }
-        candle.range = candleRangeRef;
+        //candle.range = candleRangeRef;
+        fading = true;
     }
 
 
