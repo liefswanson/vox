@@ -2,15 +2,20 @@
 using System.Collections;
 using UnityEngine.UI;
 
+
+[RequireComponent(typeof(AudioSource))]
 public class KeyPickup : MonoBehaviour {
 
     private bool hasKey = false;
     public Image keyImg;
-    public Achieve achieve;
+    public AudioClip obtainKeyClip;
+    private AudioSource source;
 
     void Start()
     {
         keyImg.enabled = false;
+        source = gameObject.GetComponent<AudioSource>();
+
     }
 
     void OnTriggerEnter(Collider other)
@@ -20,12 +25,13 @@ public class KeyPickup : MonoBehaviour {
         {
             SetHasKey(true);
             other.gameObject.SetActive(false);
-            achieve.ObtainKey();
         }
         if (other.gameObject.tag == "Door"
            && hasKey == true)
         {
-            StartCoroutine(openDoor(other.gameObject));
+            SetHasKey(false);
+            DoorController doorCtrl = other.gameObject.GetComponent<DoorController>();
+            doorCtrl.Open();
         }
     }
 
@@ -33,13 +39,9 @@ public class KeyPickup : MonoBehaviour {
     {
         hasKey = x;
         keyImg.enabled = x;
-    }
-
-    IEnumerator openDoor(GameObject door)
-    {
-        SetHasKey(false);
-        var delay = achieve.OpenDoor();
-        yield return new WaitForSeconds(delay);
-        door.SetActive(false);
+        if (x)
+        {
+            source.PlayOneShot(obtainKeyClip);
+        }
     }
 }
