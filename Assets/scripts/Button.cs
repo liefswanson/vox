@@ -16,16 +16,7 @@ public class Button : MonoBehaviour {
             AudioSource source = gameObject.GetComponent<AudioSource>();
             source.Play();
             activated = true;
-            SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Default"));
-        }
-    }
-
-    void SetLayerRecursively(GameObject obj, int layer)
-    {
-        obj.layer = layer;
-        foreach (Transform child in obj.transform)
-        {
-            SetLayerRecursively(child.gameObject, layer);
+            Misc.SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Default"));
         }
     }
 }

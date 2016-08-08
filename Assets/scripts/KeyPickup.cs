@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine.UI;
 
 
-[RequireComponent(typeof(AudioSource))]
 public class KeyPickup : MonoBehaviour {
 
     private bool hasKey = false;
@@ -14,8 +13,11 @@ public class KeyPickup : MonoBehaviour {
     void Start()
     {
         keyImg.enabled = false;
-        source = gameObject.GetComponent<AudioSource>();
-
+        source = GameObject.FindGameObjectsWithTag("Notification")[0].GetComponent<AudioSource>();
+        if (source == null)
+        {
+            throw new System.Exception("Notification object not available. Please put in scene heirarchy.");
+        }
     }
 
     void OnTriggerEnter(Collider other)

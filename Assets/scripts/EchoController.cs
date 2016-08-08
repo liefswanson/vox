@@ -82,6 +82,7 @@ public class EchoController : MonoBehaviour
                 // fix, might need calibration
                 // candle.range = candleRangeTemp * candleRangeMult * Mathf.Min(currentLoudness * micScaling, 1);
                 candle.range = candleRangeTemp * candleRangeMult;
+                candle.range = candleRangeTemp * Mathf.Pow(currentLoudness, 1.0f/4.2f) * (candleRangeMult - 1) + candleRangeTemp; 
             }
             else if (keyActive)
             {

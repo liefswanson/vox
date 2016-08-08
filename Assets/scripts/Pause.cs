@@ -10,6 +10,7 @@ public class Pause : MonoBehaviour {
     private bool paused;
 
     public DemoOver demoOver;
+    public FallDie death;
 
     public GameObject pauseMenu;
 
@@ -40,7 +41,8 @@ public class Pause : MonoBehaviour {
 	// FIXME
 	void Update () {
 	    if (CrossPlatformInputManager.GetButtonDown("Pause")
-            && !demoOver.paused)
+            && !demoOver.paused
+            && !death.paused)
         {
             paused = !paused;
             Cursor.visible = paused;

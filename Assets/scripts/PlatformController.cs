@@ -9,6 +9,7 @@ public class PlatformController : MonoBehaviour {
     public AudioClip followUpClip;
     private float speed;
     private bool activated = false;
+    public bool done = false;
 
 	void Start () {
         var time = clipToMatch.length - followUpClip.length;
@@ -21,6 +22,11 @@ public class PlatformController : MonoBehaviour {
         {
             float step = speed * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, target.position, step);
+            if (transform.position == target.position)
+            {
+                activated = false;
+                done = true;
+            }
         }
 	}
 
